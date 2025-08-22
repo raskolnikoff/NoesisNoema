@@ -17,11 +17,17 @@
 
 import Foundation
 
+// Import shared components for model registry
+// Note: In a real Xcode project, these would be part of the same module
+// For CLI testing, we may need to compile them together
+
 // MARK: - CLI Args
 struct CLI {
     var modelPath: String?
     var prompt: String?
     var usePlainTemplate: Bool = false
+    var showModelInfo: String? = nil  // For 'nn model info <id>' command
+    var listModels: Bool = false      // For 'nn model list' command
     // sampling / runtime
     var temp: Float = 0.7
     var topK: Int32 = 60
@@ -59,6 +65,19 @@ func parseArgs() -> CLI {
             if let v = it.next(), let i = Int32(v) { cli.nLen = i }
         case "-v", "--verbose":
             cli.verbose = true
+        case "model":
+            // Handle 'nn model info <id>' and 'nn model list' subcommands
+            if let subcommand = it.next() {
+                switch subcommand {
+                case "info":
+                    cli.showModelInfo = it.next()
+                case "list":
+                    cli.listModels = true
+                default:
+                    print("Unknown model subcommand: \(subcommand)")
+                    print("Available: info <id>, list")
+                }
+            }
         default:
             continue
         }
@@ -234,6 +253,50 @@ func cleanOutput(_ s: String) -> String {
 let cli0 = parseArgs()
 var cli = cli0
 let fm = FileManager.default
+
+// Handle model registry commands first
+if cli.listModels {
+    print("=== Available Models ===")
+    let registry = ModelRegistry.shared
+    Task {
+        await registry.scanForModels()
+        let models = registry.getAllModels()
+        
+        if models.isEmpty {
+            print("No GGUF models found in search paths.")
+            print("Search paths:")
+            for path in ModelRegistry.getDefaultSearchPaths() {
+                print("  - \(path)")
+            }
+        } else {
+            for model in models.sorted(by: { $0.name < $1.name }) {
+                print("\(model.id): \(model.name) (\(model.sizeDescription), \(model.parameterDescription) params)")
+            }
+        }
+    }
+    dispatchMain()
+    exit(0)
+}
+
+if let modelId = cli.showModelInfo {
+    print("=== Model Information ===")
+    let registry = ModelRegistry.shared
+    Task {
+        await registry.scanForModels()
+        if let info = registry.getModelInfo(id: modelId) {
+            print(info)
+        } else {
+            print("Model not found: \(modelId)")
+            print("\nAvailable models:")
+            let models = registry.getAllModels()
+            for model in models.sorted(by: { $0.name < $1.name }) {
+                print("  - \(model.id): \(model.name)")
+            }
+        }
+    }
+    dispatchMain()
+    exit(0)
+}
 
 // Resolve model path
 var modelPath: String?
