@@ -262,23 +262,31 @@ class ModelManager {
 
     /// Generates an answer to a question using the LLM model (asynchronous)
     func generateAsyncAnswer(question: String) async -> String {
-        // RAG文脈を構築
+        // RAG文脈を構築（ラベル付き + ルール）
         let embedding = self.currentEmbeddingModel.embed(text: question)
         let topChunks = VectorStore.shared.findRelevant(queryEmbedding: embedding, topK: 6)
-        var context = topChunks.map { $0.content }.joined(separator: "\n---\n")
-        if context.isEmpty { context = "" }
-        // コンテキストの安全上限（簡易）
-        if context.count > 2000 { context = String(context.prefix(2000)) }
+        // ラベル化
+        let (labelsText, labels) = CitationLabeler.labeledContext(from: topChunks, perChunkLimit: 600)
+        // ルール + ラベルをContextへ
+        var contextBlocks: [String] = []
+        if !labelsText.isEmpty { contextBlocks.append(labelsText) }
+        contextBlocks.append(CitationLabeler.citationRules())
+        var context = contextBlocks.joined(separator: "\n\n")
+        // セーフティ上限（簡易）
+        if context.count > 2400 { context = String(context.prefix(2400)) }
 
         // @Sendable 回避: モデルをローカルへ
         let model = self.currentLLMModel
         let ctx = context.isEmpty ? nil : context
-        return await withCheckedContinuation { continuation in
+        let raw = await withCheckedContinuation { continuation in
             DispatchQueue.global().async {
                 let result = model.generate(prompt: question, context: ctx)
                 continuation.resume(returning: result)
             }
         }
+        // 段落ごとに引用を強制（ストリーミング安全: 事後正規化）
+        let guarded = CitationLabeler.enforceCitations(text: raw, maxLabel: labels.count)
+        return guarded
     }
 
     /// Loads a model from a file.
