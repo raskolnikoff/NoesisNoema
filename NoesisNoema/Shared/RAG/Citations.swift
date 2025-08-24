@@ -39,9 +39,23 @@ enum CitationExtractor {
         }
     }
     static func splitParagraphs(_ text: String) -> [String] {
-        // Split by two or more newlines as paragraph separators
-        let parts = text.components(separatedBy: /\n{2,}/)
-        return parts.map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-            .filter { !$0.isEmpty }
+        // Group lines by blank-line separators into paragraphs
+        let lines = text.components(separatedBy: "\n")
+        var paras: [String] = []
+        var current: [String] = []
+        func flush() {
+            let joined = current.joined(separator: "\n").trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+            if !joined.isEmpty { paras.append(joined) }
+            current.removeAll(keepingCapacity: true)
+        }
+        for line in lines {
+            if line.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).isEmpty {
+                if !current.isEmpty { flush() }
+            } else {
+                current.append(line)
+            }
+        }
+        if !current.isEmpty { flush() }
+        return paras
     }
 }
