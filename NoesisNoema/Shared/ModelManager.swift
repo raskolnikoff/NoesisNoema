@@ -1,28 +1,15 @@
-// !$*UTF8*$!
-{
-    archiveVersion = 1;
-    classes = {
-    };
-    objectVersion = 77;
-    objects = {
+//
+//  ModelManager.swift
+//  NoesisNoema
+//
+//  Created by [Your Name] on [Date].
+//
 
-/* Begin PBXBuildFile section */
-        F4021E4F2E3DC3A2007A4236 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = F4021E4E2E3DC3A2007A4236 /* ZIPFoundation */; };
-        F409DFD52E4F88020010AB03 /* NoesisNoema/Frameworks/llama_ios.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = F41611E52E4F41C400B6B88C /* NoesisNoema/Frameworks/llama_ios.xcframework */; };
-        F409DFD62E4F88020010AB03 /* NoesisNoema/Frameworks/llama_ios.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F41611E52E4F41C400B6B88C /* NoesisNoema/Frameworks/llama_ios.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-        F41611E42E4F41B800B6B88C /* NoesisNoema/Frameworks/llama_macos.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = F41611E22E4F41B800B6B88C /* NoesisNoema/Frameworks/llama_macos.xcframework */; };
-        F41611E92E4F4F5800B6B88C /* MetalKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F41611E82E4F4F5800B6B88C /* MetalKit.framework */; };
-        F41FAA922E4F55510077738B /* NoesisNoema/Frameworks/llama_macos.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = F41611E22E4F41B800B6B88C /* NoesisNoema/Frameworks/llama_macos.xcframework */; };
-        F4C5811E2E4F036E00E64194 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4C5811C2E4F036E00E64194 /* Metal.framework */; };
-        F4C581212E4F037500E64194 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4C581202E4F037500E64194 /* Accelerate.framework */; };
-        F4C581532E4F12D700E64194 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4C581202E4F037500E64194 /* Accelerate.framework */; };
-        F4C581542E4F12E000E64194 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4C5811C2E4F036E00E64194 /* Metal.framework */; };
-        F4C581552E4F12E000E64194 /* MetalKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4C5811D2E4F036E00E64194 /* MetalKit.framework */; };
-        F4C581602E4F13EC00E64194 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4C581202E4F037500E64194 /* Accelerate.framework */; };
-        F4C581612E4F13EC00E64194 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4C5811C2E4F036E00E64194 /* Metal.framework */; };
-        F4D1DB542E4F18ED006B902C /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = F4D1DB532E4F18ED006B902C /* ZIPFoundation */; };
-/* End PBXBuildFile section */
+import Foundation
 
+class ModelManager {
+    // TODO: Implement model management functionality
+}
 /* Begin PBXCopyFilesBuildPhase section */
         F4C581A12E4F900000E64194 /* Embed Frameworks */ = {
             isa = PBXCopyFilesBuildPhase;
